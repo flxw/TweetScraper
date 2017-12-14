@@ -53,6 +53,45 @@ class SaveToMongoPipeline(object):
             logger.info("Item type is not recognized! type = %s" %type(item))
 
 
+class SaveToPostgresPipeline(object):
+
+    ''' pipeline that save data to mongodb '''
+    def __init__(self):
+        self.connection = psycopg2.connect(dbname = settings['POSTGRES_DB'], user = settings['POSTGRES_USER'], password = settings['POSTGRES_PASSWORD'])
+        self.cursor = self.connection.cursor()
+
+        self.cursor.execute("""CREATE TABLE tweets IF NOT EXISTS(
+            id BIGINT PRIMARY KEY,
+            user_id BIGINT,
+            username VARCHAR(36),
+            text VARCHAR(2048),
+            is_reply BOOLEAN,
+            is_retweet BOOLEAN,
+            reply_count INT,
+            favorite_count INT,
+            retweet_count INT,
+            timestamp TIMESTAMP
+        )""")
+        self.insertTweetStatement = "INSERT INTO {0} VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)".format(settings['POSTGRES_TWEET_TABLE'])
+
+    def process_item(self, item, spider):
+        if isinstance(item, Tweet):
+          self.cursor.execute(self.insertTweetStatement, (
+            tweet['ID'],
+            tweet['user_id'],
+            tweet['usernameTweet'],
+            tweet['text'],
+            tweet['is_reply'],
+            tweet['is_retweet'],
+            tweet['nbr_reply'],
+            tweet['nbr_favorite'],
+            tweet['nbr_retweet'],
+            tweet['datetime']
+          ))
+        elif isinstance(item, User):
+          logger.info("User storage is not implemented!")
+        else:
+            logger.info("Item type is not recognized! type = %s" %type(item))
 
 class SaveToFilePipeline(object):
     ''' pipeline that save data to disk '''

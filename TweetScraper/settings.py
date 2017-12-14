@@ -27,3 +27,11 @@ MONGODB_TWEET_COLLECTION = "tweet" # collection name to save tweets
 MONGODB_USER_COLLECTION = "user"   # collection name to save users
 
 
+# settings for postgres
+POSTGRES_SERVER = "127.0.0.1"
+POSTGRES_PORT   = 27017
+POSTGRES_USER   = "wasd"
+POSTGRES_PASSWORD = "TEST"
+POSTGRES_DB = "TweetScraper"        # database name to save the crawled data
+POSTGRES_TWEET_TABLE = "tweet" # collection name to save tweets
+POSTGRES_USER_TABLE  = "user"   # collection name to save users
